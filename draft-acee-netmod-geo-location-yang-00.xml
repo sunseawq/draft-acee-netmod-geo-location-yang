@@ -1,0 +1,564 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+<!-- This template is for creating an Internet Draft using xml2rfc,               
+    which is available here: http://xml.resource.org. -->
+<!DOCTYPE rfc SYSTEM "rfc2629.dtd" [
+<!-- One method to get references from the online citation libraries.             
+    There has to be one entity for each item to be referenced.                    
+    An alternate method (rfc include) is described in the references. -->
+<!ENTITY RFC2119 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
+<!ENTITY RFC2697 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2697.xml">
+<!ENTITY RFC2698 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2698.xml">
+<!ENTITY RFC6020 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6020.xml">
+]>
+<?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
+<?rfc toc="yes" ?>
+<?rfc tocompact="yes"?>
+<?rfc tocindent="yes"?>
+<?rfc symrefs="yes" ?>
+<?rfc sortrefs="yes"?>
+<?rfc iprnotified="no" ?>
+<?rfc strict="yes" ?>
+<?rfc compact="yes"?>
+<?rfc subcompact="no"?>
+<rfc category="std" docName="draft-acee-netmod-geo-location-yang-00"
+     ipr="trust200902">
+  <front>
+    <title abbrev="Geo Location YANG">A YANG Data Model for Geo Location
+    Information</title>
+
+    <author fullname="Acee Lindem" initials="A." surname="Lindem">
+      <organization>Cisco</organization>
+
+      <address>
+        <postal>
+          <street>301 Midenhall Way</street>
+
+          <city>Cary</city>
+
+          <region>NC</region>
+
+          <code>27513</code>
+
+          <country>USA</country>
+        </postal>
+
+        <email>acee@cisco.com</email>
+      </address>
+    </author>
+
+    <author fullname="Qin Wu" initials="Q." surname="Wu">
+      <organization>Huawei</organization>
+
+      <address>
+        <postal>
+          <street>101 Software Avenue, Yuhua District</street>
+
+          <city>Nanjing</city>
+
+          <region>Jiangsu</region>
+
+          <code>210012</code>
+
+          <country>China</country>
+        </postal>
+
+        <email>bill.wu@huawei.com</email>
+      </address>
+    </author>
+
+    <date year="2018"/>
+
+    <area>OPS Area</area>
+
+    <workgroup>NETMOD Working Group</workgroup>
+
+    <abstract>
+      <t>For Point-to-Point (P2P)) and Point-to-Multi-Point (P2MP) networks,
+      the Geo Coordinates can be used to dynamically computing the cost to
+      neighbors. This is useful both from the standpoint of auto-configuration
+      and situations where the OSPF routers are moving. The Geo Coordinates
+      are also useful for other applications such as Traffic Engineering (TE)
+      and network management.</t>
+
+      <t>This document defines a YANG data model that can be used to
+      distribute the current Geo Coordinates and Civil location of the router
+      to the management system. The YANG modules in this document conform to
+      the Network Management Datastore Architecture (NMDA).</t>
+    </abstract>
+  </front>
+
+  <middle>
+    <section anchor="intro" title="Introduction">
+      <t>For Point-to-Point (P2P)) and Point-to-Multi-Point (P2MP) networks,
+      the Geo Coordinates can be used to dynamically computing the cost to
+      neighbors. This is useful both from the standpoint of auto-configuration
+      and situations where the OSPF routers are moving. The Geo Coordinates
+      are also useful for other applications such as Traffic Engineering (TE)
+      and network management.</t>
+
+      <t>This document defines a YANG data model that can be used to
+      distribute the current Geo Coordinates and Civil location of the router
+      to the management system.</t>
+
+      <t>The YANG modules in this document conform to the Network Management
+      Datastore Architecture (NMDA).</t>
+
+      <section title="Terminology">
+        <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+        "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+        "OPTIONAL" in this document are to be interpreted as described in BCP
+        14 [RFC2119] [RFC8174] when, and only when, they appear in all
+        capitals, as shown here.</t>
+      </section>
+
+      <section title="Tree Diagrams">
+        <t>This document uses the graphical representation of data models
+        defined in [RFC8340].</t>
+      </section>
+    </section>
+
+    <section title="Design of Data Model">
+      <t>The YANG data model for Geo location has been split into two modules:
+      <list style="symbols">
+          <t>The ietf-geo-location-types.yang module provides common
+          definitions such as latitude and longtitude,altitude data types.</t>
+
+          <t>The ietf-geo-coordinates.yang module defines technology-
+          independent abstraction of Geo coordinates constructs for routing
+          protocols that use geo location for path compuation or other network
+          management application.</t>
+        </list></t>
+
+      <t>The Geo Location YANG module defined in this document has all the
+      common building blocks for the routing protocol.</t>
+
+      <t>The Geo Location YANG module augments the /routing/ path defined in
+      the ietf-routing module and has the following structure:</t>
+
+      <figure>
+        <artwork>module: ietf-geo-coordinates
+     augment /rt:routing:
+       +--rw geo-location-on  boolean
+       +--ro geo-location  
+             .
+             .
+          +--ro latitude        
+          +--ro longtitude
+          +--ro altitude
+          +--ro radius
+      +--ro civil-location  
+         +--ro state
+         +--ro city
+         +--ro postal-code
+         +--ro country-code
+         +--ro address            </artwork>
+      </figure>
+    </section>
+
+    <section title="Geo Location Types YANG Module ">
+      <t>&lt;CODE BEGINS&gt; file
+      "ietf-geo-location-types@2018-12-13.yang"</t>
+
+      <figure>
+        <artwork>   module ietf-geo-location-types {
+        yang-version 1.1;
+        namespace "urn:ietf:params:xml:ns:yang:ietf-geo-location-types";
+        prefix "geo";
+
+        organization
+          "IETF NETMOD (NETCONF Data Modeling Language) Working Group";
+        contact
+         "WG Web:   &lt;http://tools.ietf.org/wg/netmod/&gt;
+          WG List:  &lt;mailto:netmod@ietf.org&gt;
+          Editor:   Acee Lindem
+                    &lt;mailto:acee@cisco.com&gt;
+                    Qin Wu
+                    &lt;bill.wu@huawei.com&gt;
+                    Christan Hopps
+                    &lt;chopps@chopps.org&gt;";
+        description
+          "This module contains a collection of generally useful derived
+          YANG data types for geo-location.";
+
+        revision "2018-12-13" {
+          description
+            "Initial version";
+          reference
+            "RFC xxxx: Common YANG Data Types for Geo-Location";
+        }
+
+     /*** Collection of types related to geo-location ***/
+    typedef latitude-degree {
+     type uint16 {
+     range "0..90";
+    }
+   description
+         "Latitude degree.";
+   }
+    typedef longtitude-degree {
+      type uint16 {
+      range "0..180";
+     }
+   description
+         "longtitude degree.";
+    }
+   typedef milliseconds {
+     type uint32 {
+      range "0..3599999";
+   }
+   description
+         "longtitude in milliseconds
+        or latitude in milliseconds.";
+   }
+
+   typedef minutes {
+     type uint8 {
+      range "0..59";
+  }
+   description
+         "longtitude in minutes
+        or latitude in minutes.";
+   }
+
+   typedef seconds {
+     type uint8 {
+      range "0..59";
+  }
+   description
+         "longtitude in seconds
+        or latitude in seconds.";
+   }
+
+   typedef degree {
+    type union {
+    type latitude-degree;
+    type longtitude-degree;
+     }
+   description
+    "longtitude degree or
+     latitude degree.";
+   }
+
+   typedef altitude-in-meter {
+     type int32;
+     units meter;
+   description
+   "Altitude in meters.";
+   }
+
+   typedef altitude-in-centimeter {
+     type int32;
+     units centimeter;
+   description
+   "Altitude in centimeters.";
+   }
+   
+   typedef altitude {
+   type union {
+    type altitude-in-meter;
+    type altitude-in-centimeter;
+    }
+   description
+   "Altitude in meters or
+     altitude in centimeters.";
+   }
+
+   typedef east-longtitude {
+   type longtitude-degree;
+   description
+   "east longtitude degree";
+   }
+
+   typedef west-longtitude {
+   type longtitude-degree;
+   description
+   "west longtitude degree";
+   }
+
+   typedef north-latitude {
+   type latitude-degree;
+   description
+   "north latitude degree";
+   }
+
+   typedef south-latitude {
+   type latitude-degree;
+   description
+   "south latitude degree";
+   }
+
+   typedef radius {
+   type uint16;
+   units kilometer;
+   description
+   "Radius in kilometers.";
+   }
+   }</artwork>
+      </figure>
+
+      <t>&lt;CODE ENDS&gt;</t>
+    </section>
+
+    <section title="Geo Location YANG Module">
+      <t>&lt;CODE BEGINS&gt; file "ietf-geo-coordinates@2018-12-13.yang"</t>
+
+      <figure>
+        <artwork>module ietf-geo-coordinates {
+       yang-version "1.1";
+       namespace
+         "urn:ietf:params:xml:ns:yang:ietf-geo-coordinates";
+       prefix "geo-co";
+
+       import ietf-routing {
+         prefix "rt";
+         description
+           "An 'ietf-routing' module version that is compatible with
+            the Network Management Datastore Architecture (NMDA)
+            is required.";
+       }
+
+       import ietf-geo-location-types {
+         prefix "geo";
+       }
+       organization
+         "IETF NETMOD (Network Modeling) Working Group";
+       contact
+         "WG Web:   &lt;https://datatracker.ietf.org/wg/netmod/&gt;
+          WG List:  &lt;mailto:rtgwg@ietf.org&gt;
+
+          Editor:   Acee Lindem
+                    &lt;mailto:acee@cisco.com&gt;
+                    Qin Wu
+                    &lt;bill.wu@huawei.com&gt;
+                    Christan Hopps
+                    &lt;chopps@chopps.org&gt;";
+
+       description
+         "This YANG module augments the 'ietf-routing' module with basic
+          parameters for Geo coordinates.  The model fully conforms
+          to the Network Management Datastore Architecture (NMDA).";
+
+        revision "2018-12-13" {
+          description
+            "Initial version";
+          reference
+            "RFC xxxx: YANG Geo-Location Module";
+        }
+       augment "/rt:routing"{
+         description
+           "ietf-routing module
+            control-plane-protocol augmentation for geo location data.";
+         leaf geo-location-on {
+            type boolean;
+            default false;
+            description "Control whether geo-location function is
+             turned on or off.";
+         }
+         container geo-location {
+           config false;
+           description
+             "Support for geo location.";
+         container longtitude {
+           description
+             "Container for longtitude.";
+             leaf flag {
+               type enumeration {
+               enum east {
+               description "east
+               of the Prime Meridian.";
+               }
+               enum west {
+               description "
+               west of the Prime Meridian.";
+               }
+               }
+               description
+                 "Type of the longtitude.";
+             }
+             leaf longtitude-degree {
+               type geo:degree;
+                description
+                 "longtitude degree.";
+             }
+             leaf longtitude-millisecond {
+               type geo:milliseconds;
+                description
+                 "longtitude in milliseconds.";
+             }
+         }
+         container latitude {
+           description
+             "Container for latitude.";
+             leaf flag {
+               type enumeration {
+               enum north {
+               description "the Latitude is
+             north relative to the Equator.";
+               }
+               enum south {
+               description "the Latitude is
+             south relative to the Equator.";
+               }
+             }
+             description
+              "Type of the latitude.";
+            }
+             leaf latitude-degree {
+               type geo:degree;
+                description
+                 "latitude degree.";
+          }
+            leaf latitude-millisecond {
+               type geo:milliseconds;
+               description
+                "latitude in milliseconds.";
+             }
+         }
+         container altitude {
+           description
+             "Container for altitude.";
+             leaf meter-distance {
+               type geo:altitude-in-meter;
+               description
+                 "Altitude distance in meter.";
+             }
+             leaf centimeter-distance {
+               type geo:altitude-in-centimeter;
+                    description
+                 "Altitude distance in centimeter.";
+             }
+         leaf radius {
+           type geo:radius;
+           description
+           "Radius in kilometers.";
+         }
+       }
+   }
+     container civil-location {
+         config false;
+         description
+           "Support for civil location.";
+         leaf country-code {
+          type string {
+           pattern '[A-Z]{2}';
+           }
+          description "Country expressed as
+            ISO ALPHA-2 code";
+         }
+        leaf state {
+          type string;
+         description
+         "state of the civil location.";
+       }
+       leaf city {
+        type string;
+        description "city name of the civil location";
+       }
+       leaf postal-code {
+       type string;
+       description
+        "Postal code of the civil location.";
+
+       }
+       leaf address {
+        type string;
+        description "Street address of civil location.";
+       }
+  }
+ }
+}</artwork>
+      </figure>
+
+      <t>&lt;CODE ENDS&gt;</t>
+    </section>
+
+    <!-- intro -->
+
+    <section title="Security Considerations">
+      <t>The YANG module defined in this document is designed to be accessed
+      via network management protocols such as NETCONF [RFC6241] or RESTCONF
+      [RFC8040]. The lowest NETCONF layer is the secure transport layer, and
+      the mandatory-to-implement secure transport is Secure Shell (SSH)
+      [RFC6242]. The lowest RESTCONF layer is HTTPS, and the
+      mandatory-to-implement secure transport is TLS [RFC5246].</t>
+
+      <t>The NETCONF access control model [RFC6536] provides the means to
+      restrict access for particular NETCONF or RESTCONF users to a
+      preconfigured subset of all available NETCONF or RESTCONF protocol
+      operations and content.</t>
+
+      <t>There are a number of data nodes defined in this YANG module that are
+      writable/creatable/deletable (i.e., config true, which is the default).
+      These data nodes may be considered sensitive or vulnerable in some
+      network environments. Write operations (e.g., edit-config) to these data
+      nodes without proper protection can have a negative effect on network
+      operations. The vulnerable "config true" subtrees and data nodes are the
+      following: <list style="symbols">
+          <t>/rt:routing/geo-co:geo-location-on</t>
+        </list></t>
+    </section>
+
+    <section title="IANA Considerations">
+      <t>This document registers two URIs in the IETF XML registry [RFC3688].
+      Following the format in [RFC3688], the following registration is
+      requested to be made:</t>
+
+      <figure>
+        <artwork>URI: urn:ietf:params:xml:ns:yang:ietf-geo-location-types
+        Registrant Contact: The IESG.
+        XML: N/A, the requested URI is an XML namespace.
+
+        URI: urn:ietf:params:xml:ns:yang:ietf-geo-coordinates
+        Registrant Contact: The IESG.
+        XML: N/A, the requested URI is an XML namespace.</artwork>
+      </figure>
+
+      <t>This document registers two YANG modules in the YANG Module Names
+      registry [RFC6020].</t>
+
+      <figure>
+        <artwork>name: ietf-geo-location-types
+        namespace: urn:ietf:params:xml:ns:yang:ietf-geo-location-types
+        prefix: ospf
+        reference: RFC XXXX
+
+        name: ietf-geo-coordinates
+        namespace: urn:ietf:params:xml:ns:yang:ietf-geo-coordinates
+        prefix: ospf
+        reference: RFC XXXX</artwork>
+      </figure>
+    </section>
+
+    <section title="Acknowledgements">
+      <t>Naiming Shen and Enke Chen contributed to an earlier version of
+      [I-D.acee-ospf-geo-location]. We would like to thank the authors of that
+      document on Geo Location for material that assisted in thinking about
+      this document.</t>
+
+      <t>The authors would also like to thank Juergen Schoenwaelder and Robert
+      Wilton for their thorough reviews and helpful comments.</t>
+    </section>
+
+    <!---->
+  </middle>
+
+  <back>
+    <references title="Normative References">
+      <?rfc include="reference.RFC.2119.xml"?>
+
+      <?rfc include="reference.RFC.6241.xml"?>
+
+      <?rfc include="reference.RFC.7950.xml"?>
+
+      <?rfc include="reference.RFC.8340.xml"?>
+
+      <?rfc include="reference.RFC.8342.xml"?>
+
+      <?rfc include="reference.RFC.3688.xml"?>
+    </references>
+
+    <references title="Informative References">
+      <?rfc include="reference.I-D.ietf-netconf-nmda-netconf"?>
+    </references>
+  </back>
+</rfc>
